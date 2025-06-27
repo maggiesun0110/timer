@@ -7,17 +7,17 @@
 
     <link rel = "stylesheet" href = "style.css">
     <script defer src = "script.js"></script>
-    
+
 </head>
 <body>
     <div id = "timerSelection">
         <h1>Which timer would you like to use today?</h1>
         <!--flex for timerOptions-->
         <div id = "timerOptions">
-            <button id = "custom" onclick = "customDefaultTimer()">custom</button>
-            <button id = "pomodoro" onclick = "pomodoroTimer()">pomodoro</button>
-            <button id = "ld" onclick = "ldTimer()">ld timer</button>
-            <button id = "pf" onclick = "pfTimer()">pf timer</button>
+            <button id = "custom" onclick = "timerSelected('custom')">custom</button>
+            <button id = "pomodoro" onclick = "timerSelected('pomodoro')">pomodoro</button>
+            <button id = "ld" onclick = "timerSelected('ld')">ld timer</button>
+            <button id = "pf" onclick = "timerSelected('pf')">pf timer</button>
         </div>
     </div>
 

@@ -4,6 +4,8 @@
     padding: 0;
     margin: 0;
     font-family: 'Nunito', sans-serif;
+    color: #eaeaea;
+    box-sizing: border-box;
 }
 
 body{
@@ -13,11 +15,91 @@ body{
 }
 
 h1{
-    color: #eaeaea;
-    font-size: 4vw;
+    font-size: 4.5vw;
 }
 
 button{
-    padding: 0.5vw;
+    background-color: #1b1e23;
+    padding: 1vw;
+    border: none;
     border-radius: 20px;
+    box-shadow: 4px 8px 8px #0D0D0D, 
+    -4px -2px 8px rgba(255, 255, 255, 0.1);
+    transform: transform 0.2s ease-out;
+    font-size: x-large;
+}
+
+button:hover{
+    cursor: pointer;
+    background-color: #24282f;
+    transform: scale(1.15);
+    transition: 0.3s;
+}
+
+input{
+    padding: 0.6vw;
+    border: none;
+    background-color: #1b1e23;
+    box-shadow: inset 4px 4px 8px #0d0d0d, 
+    inset -4px -4px 8px #333333;
+    border-radius: 10px;
+}
+
+#timerBody{
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    align-items:center;
+}
+
+#displayTime{
+    font-size: 20vw;
+    padding: 0;
+    margin-top: 5vh;
+}
+
+#inputTime{
+    display: flex;
+    gap: 5vw;
+}
+
+#startAndStop{
+    display: flex;
+    gap: 5vw;
+}
+
+input:focus{
+    outline: none;
+    background-color: #1b1e23;
+}
+
+#timerSelection{
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(224, 224, 224, 0.2);
+    display: flex;
+    gap: 2vw;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    visibility:visible;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#timerSelection.hidden{
+    visibility: hidden;
+    transition: opacity 0.9 ease, visibility 0.9s ease 0.9s;
+}
+
+#timerOptions{
+    display: flex;
+    gap: 60px;
+}
+
+#timerOptions button{
+    background-color: rgba(130, 130, 130, 0.2);
+    box-shadow: 4px 4px 8px #333333, -2px -2px 8px rgb(116, 116, 116);
 }
