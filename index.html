@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>timer</title>
+
+    <link rel = "stylesheet" href = "style.css">
+    <script defer src = "script.js"></script>
+    
+</head>
+<body>
+    <div id = "timerSelection">
+        <h1>Which timer would you like to use today?</h1>
+        <!--flex for timerOptions-->
+        <div id = "timerOptions">
+            <button id = "custom" onclick = "customDefaultTimer()">custom</button>
+            <button id = "pomodoro" onclick = "pomodoroTimer()">pomodoro</button>
+            <button id = "ld" onclick = "ldTimer()">ld timer</button>
+            <button id = "pf" onclick = "pfTimer()">pf timer</button>
+        </div>
+    </div>
+
+    <div id = timerBody>
+        <p id = "displayTime">00:00:00</p>
+
+        <!--inputTime only shows if you select custom-->
+        <div id = "inputTime">
+            <input type = "number" placeholder = "hrs" id = "hrs">
+            <input type = "number" placeholder = "mins" id = "mins">
+            <input type = "number" placeholder = "secs" id = "secs">
+        </div>
+
+        <div id = "startAndStop">
+            <button id = "pauseButton" onclick = "pauseButton()">pause</button>
+            <button id = "startButton" onclick = "startButton()">start</button>
+            <button id = "stopButton" onclick = "stopButton()">stop</button>
+        </div>
+    </div>
+</body>
+</html>

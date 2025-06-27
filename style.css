@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Space+Mono&family=Whisper&display=swap');
+
+*{
+    padding: 0;
+    margin: 0;
+    font-family: 'Nunito', sans-serif;
+}
+
+body{
+    background-color: #1b1e23;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+h1{
+    color: #eaeaea;
+    font-size: 4vw;
+}
+
+button{
+    padding: 0.5vw;
+    border-radius: 20px;
+}
