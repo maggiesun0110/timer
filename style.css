@@ -61,6 +61,7 @@ input{
 #inputTime{
     display: flex;
     gap: 5vw;
+    display: none;
 }
 
 #startAndStop{
@@ -79,7 +80,7 @@ input:focus{
     position: fixed;
     top: 0;
     left: 0;
-    background-color: rgba(224, 224, 224, 0.2);
+    background-color: rgba(224, 224, 224, 0.3);
     display: flex;
     gap: 2vw;
     flex-direction: column;
