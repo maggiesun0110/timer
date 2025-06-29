@@ -20,6 +20,20 @@ let pomodoroWorkDuration = 25*60; //25 min
 let pomodoroShortBreak = 5*60;
 let pomodoroLongBreak = 15*60;
 
+//ld cycle
+let speech = "1AC";
+
+//ld times
+const ldCycle = [
+    {speech: "1AC", time: 6*60},
+    {speech: "CX", time: 3*60},
+    {speech: "1NC", time: 7*60},
+    {speech: "CX", time: 3*60},
+    {speech: "1AR", time: 4*60},
+    {speech: "2NR", time: 6*60},
+    {speech: "2AR", time: 3*60}
+]
+
 //timer stuff
 let currentDuration = pomodoroWorkDuration;
 let duration;
@@ -32,7 +46,7 @@ let pausedTime = null;
 
 //==clears overlay and sets the preset times==
 function timerSelected(type){
-    overlayDone();
+    toggleOverlay();
     currentMode = type;
 
     if(type == "custom"){
@@ -41,36 +55,13 @@ function timerSelected(type){
         displayTime.innerText = "00:25:00";
         clearInputFields();
     } else if(type == "ld"){
-        
+        displayTime.innerText = "00:06:00";
+        clearInputFields();
     } else if(type == "pf"){
 
     }
 }
 
-//==pomodoroTimer==
-function pomodoroTimer(){
-    if (sessionType === "work") {
-        duration = pomodoroWorkDuration;
-    } else if (sessionType === "long break") {
-        duration = pomodoroLongBreak;
-    } else {
-        duration = pomodoroShortBreak;
-    }
-
-    if(pausedTime !== null){
-        timeLeft = pausedTime;
-        startTime = Date.now()-(duration-timeLeft) * 1000;
-        pausedTime = null;
-    } else{
-        timeLeft = duration;
-        startTime = Date.now();
-    }
-
-    clearInterval(interval); 
-    interval = setInterval(() => {
-        updateDisplay();
-    }, 1000);
-}
 
 function formatTime(seconds){
     const h = Math.floor(seconds/3600)
@@ -87,6 +78,7 @@ function updateDisplay(){
     if (timeLeft <= 0) {
         clearInterval(interval);
         displayTime.textContent = "00:00:00";
+        isRunning = false;
         switchSession(); 
         return;
     }
@@ -94,19 +86,57 @@ function updateDisplay(){
     displayTime.textContent = formatTime(timeLeft);
 }
 
+//next session/speech
 function switchSession(){
-    if (sessionType === "work") {
-        cycle++;
-        if (cycle % 4 === 0) {
-            sessionType = "long break";
-        } else {
-            sessionType = "short break";
-        }
-    } else {
-        sessionType = "work";
+    switch (currentMode){
+        case "pomodoro":
+            if (sessionType === "work") {
+                cycle++;
+                if (cycle % 4 === 0) {
+                    sessionType = "long break";
+                } else {
+                    sessionType = "short break";
+                }
+            } else {
+                sessionType = "work";
+            }
+
+            const nextPomodoro = sessionType === "work" ? pomodoroWorkDuration : sessionType === "long break" ? pomodoroLongBreak: pomodoroShortBreak;
+            startTimer(nextPomodoro);
+            break;
+        case "ld":
+            cycle++;
+            startLd();
+            break;
+    }
+}
+
+function startTimer(durationToUse){
+    duration = durationToUse;
+
+    if(pausedTime !== null){
+        timeLeft = pausedTime;
+        startTime = Date.now()-(duration-timeLeft) * 1000;
+        pausedTime = null;
+    } else{
+        timeLeft = duration;
+        startTime = Date.now();
     }
 
-    pomodoroTimer();
+    clearInterval(interval); 
+    interval = setInterval(updateDisplay, 1000);
+    
+}
+
+function startLd(){
+    if(cycle < ldCycle.length){
+        speech = ldCycle[cycle].speech;
+        timeLeft = ldCycle[cycle].time;
+        duration = timeLeft;
+        startTimer(duration)
+    } else{
+        alert("debate done");
+    }
 }
 
 function pauseButton(){
@@ -121,12 +151,16 @@ function startButton(){
     if(!isRunning){
         isRunning = true;
 
-        if(currentMode === "pomodoro"){
-            pomodoroTimer();
-        } else if(currentMode === "ld"){
-
+        switch (currentMode){
+            case "pomodoro":
+                const pomoDuration = sessionType === "work" ? pomodoroWorkDuration : sessionType === "long break" ? pomodoroLongBreak: pomodoroShortBreak;
+                startTimer(pomoDuration);
+                break;
+            case "ld":
+                startLd();
         }
     }
+    return;
 }
 
 function stopButton(){
@@ -136,13 +170,31 @@ function stopButton(){
     }
 
     timeLeft = 0;
-    displayTime.innerText = formatTime(pomodoroWorkDuration);
-    sessionType = "work";
     cycle = 0;
+    switch(currentMode){
+        case "pomodoro":
+            displayTime.innerText = formatTime(pomodoroWorkDuration);
+            sessionType = "work";
+            break;
+        case "ld":
+            displayTime.innerText = formatTime(ldCycle[0].time);
+            break;
+    }
+    
 }
 
-function overlayDone(){
-    overlay.style.display = "none";
+
+function toggleOverlay() {
+    const display = window.getComputedStyle(overlay).display;
+
+    if (display === "none") {
+        overlay.style.display = "flex";
+        clearInterval(interval);
+        isRunning = false;
+        pausedTime = timeLeft;
+    } else {
+        overlay.style.display = "none";
+    }
 }
 
 function clearInputFields(){
@@ -153,11 +205,11 @@ function clearInputFields(){
 const keysPressed = new Set();
 
 document.addEventListener("keydown", function(event){
-    keysPressed.add(event.key);
+    keysPressed.add(event.key.toLowerCase());
 
-    if(keysPressed.has("Meta") && keysPressed.has("Shift") && keysPressed.has("o")){
+    if(keysPressed.has("meta") && keysPressed.has("shift") && keysPressed.has("o")){
         event.preventDefault();
-        overlay.style.display = "";
+        toggleOverlay();
         keysPressed.clear();
     }
 })
