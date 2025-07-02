@@ -34,6 +34,23 @@ const ldCycle = [
     {speech: "2AR", time: 3*60}
 ]
 
+//pf times
+let pfSpeech = "1AC";
+
+const pfCycle = [
+    {speech: "1AC", time: 4*60},
+    {speech: "1NC", time: 4*60},
+    {speech: "CX", time: 3*60},
+    {speech: "1AR", time: 4*60},
+    {speech: "1NR", time: 4*60},
+    {speech: "CX", time: 3*60},
+    {speech: "ASummary", time: 2*60},
+    {speech: "NSummary", time: 2*60},
+    {speech: "GCX", time: 3*60},
+    {speech: "AFinalFocus", time: 2*60},
+    {speech: "BFinalFocus", time: 2*60}
+]
+
 //timer stuff
 let currentDuration = pomodoroWorkDuration;
 let duration;
@@ -47,6 +64,15 @@ let pausedTime = null;
 //==clears overlay and sets the preset times==
 function timerSelected(type){
     toggleOverlay();
+
+    clearInterval(interval);
+    interval = null;
+    isRunning = false;
+    pausedTime = null;
+    cycle = 0;
+    timeLeft = 0;
+    duration = null;
+
     currentMode = type;
 
     if(type == "custom"){
@@ -58,7 +84,8 @@ function timerSelected(type){
         displayTime.innerText = "00:06:00";
         clearInputFields();
     } else if(type == "pf"){
-
+        displayTime.innerText = "00:04:00";
+        clearInputFields();
     }
 }
 
@@ -71,6 +98,8 @@ function formatTime(seconds){
 }
 
 function updateDisplay(){
+    if(!isRunning) return;
+
     const now = Date.now();
     const elapsed = Math.floor((now - startTime) / 1000); // in seconds
     timeLeft = duration - elapsed;
@@ -108,10 +137,16 @@ function switchSession(){
             cycle++;
             startLd();
             break;
+        case "pf":
+            cycle++;
+            startPf();
+            break;
     }
 }
 
 function startTimer(durationToUse){
+    isRunning = true;
+    
     duration = durationToUse;
 
     if(pausedTime !== null){
@@ -139,6 +174,17 @@ function startLd(){
     }
 }
 
+function startPf(){
+    if(cycle < pfCycle.length){
+        pfSpeech = pfCycle[cycle].speech;
+        timeLeft = pfCycle[cycle].time;
+        duration = timeLeft;
+        startTimer(duration);
+    } else{
+        alert("debate done");
+    }
+}
+
 function pauseButton(){
     if(isRunning){
         clearInterval(interval);
@@ -158,6 +204,10 @@ function startButton(){
                 break;
             case "ld":
                 startLd();
+                break;
+            case "pf":
+                startPf();
+                break;
         }
     }
     return;
@@ -169,6 +219,7 @@ function stopButton(){
         isRunning = false;
     }
 
+    pausedTime = null;
     timeLeft = 0;
     cycle = 0;
     switch(currentMode){
@@ -178,6 +229,9 @@ function stopButton(){
             break;
         case "ld":
             displayTime.innerText = formatTime(ldCycle[0].time);
+            break;
+        case "pf":
+            displayTime.innerText = formatTime(pfCycle[0].time);
             break;
     }
     

@@ -28,6 +28,7 @@ button{
     -4px -2px 8px rgba(255, 255, 255, 0.1);
     transform: transform 0.2s ease-out;
     font-size: x-large;
+    z-index: 1;
 }
 
 button:hover{
@@ -89,6 +90,7 @@ input:focus{
     align-items: center;
     visibility:visible;
     transition: opacity 1s ease, visibility 1s ease;
+    z-index: 10;
 }
 
 #timerSelection.hidden{
