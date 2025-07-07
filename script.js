@@ -51,6 +51,12 @@ const pfCycle = [
     {speech: "BFinalFocus", time: 2*60}
 ]
 
+//custom inputs
+const hrsInput = document.getElementById("hrs");
+const minsInput = document.getElementById("mins");
+const secsInput = document.getElementById("secs");
+let customDuration = 0;
+
 //timer stuff
 let currentDuration = pomodoroWorkDuration;
 let duration;
@@ -77,6 +83,7 @@ function timerSelected(type){
 
     if(type == "custom"){
         inputTime.style.display = "flex";
+        displayTime.innerText = "00:00:00";
     } else if(type == "pomodoro"){
         displayTime.innerText = "00:25:00";
         clearInputFields();
@@ -141,6 +148,17 @@ function switchSession(){
             cycle++;
             startPf();
             break;
+        case "custom":
+            displayTime.innerText = "00:00:00";
+            isRunning = false;
+            timeLeft = 0;
+            duration = null;
+            pausedTime = null;
+            clearInterval(interval);
+            interval = null;
+            customDuration = 0;
+            alert("timer done");
+            break;
     }
 }
 
@@ -185,6 +203,43 @@ function startPf(){
     }
 }
 
+function startCustom() {
+    if (pausedTime !== null) {
+        timeLeft = pausedTime;
+        pausedTime = null;
+        startTimer(timeLeft);
+        return;
+    }
+
+    if(customDuration === 0){
+        const hrs = parseInt(hrsInput.value.trim() || "0", 10);
+        const mins = parseInt(minsInput.value.trim() || "0", 10);
+        const secs = parseInt(secsInput.value.trim() || "0", 10);
+
+        if (isNaN(hrs) || isNaN(mins) || isNaN(secs) || hrs < 0 || mins < 0 || secs < 0) {
+            alert("Enter a valid time.");
+            return;
+        }
+
+        const totalSeconds = hrs * 3600 + mins * 60 + secs;
+
+        if (totalSeconds > 0) {
+            customDuration = totalSeconds;
+            customHasRun = false;
+            displayTime.innerText = formatTime(totalSeconds);
+            startTimer(totalSeconds);
+            hrsInput.value = "";
+            minsInput.value = "";
+            secsInput.value = "";
+        } else{
+            alert("enter valid time");
+            return;
+        }
+    }
+    displayTime.innerText = formatTime(customDuration);
+    startTimer(customDuration);
+}
+
 function pauseButton(){
     if(isRunning){
         clearInterval(interval);
@@ -195,8 +250,6 @@ function pauseButton(){
 
 function startButton(){
     if(!isRunning){
-        isRunning = true;
-
         switch (currentMode){
             case "pomodoro":
                 const pomoDuration = sessionType === "work" ? pomodoroWorkDuration : sessionType === "long break" ? pomodoroLongBreak: pomodoroShortBreak;
@@ -207,6 +260,9 @@ function startButton(){
                 break;
             case "pf":
                 startPf();
+                break;
+            case "custom":
+                startCustom();
                 break;
         }
     }
@@ -233,6 +289,18 @@ function stopButton(){
         case "pf":
             displayTime.innerText = formatTime(pfCycle[0].time);
             break;
+        case "custom":
+            displayTime.innerText = "00:00:00";
+            customDuration = 0;
+            isRunning = false;
+            timeLeft = 0;
+            duration = null;
+            pausedTime = null;
+            clearInterval(interval);
+            interval = null;
+            customDuration = 0;
+            break;
+        
     }
     
 }
